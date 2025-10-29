@@ -1,0 +1,13 @@
+# Ignore build results
+bin/
+obj/
+*.user
+*.vs/
+*.suo
+
+# Ignore build caches
+*.cache
+*.pdb
+
+# Ignore system/mac files
+.DS_Store
