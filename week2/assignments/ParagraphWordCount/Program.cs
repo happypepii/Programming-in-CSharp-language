@@ -18,15 +18,19 @@ namespace WordCount
             try
             {
                 using var reader = new StreamReader(fileName);
-                ProcessFile(reader);
+                ParagraphProcessor pc = new ParagraphProcessor();
+                pc.Process(reader);
             }
             catch
             {
                 Console.WriteLine("File Error");
             }
         }
+    }
 
-        static void ProcessFile(TextReader reader)
+    class ParagraphProcessor
+    {
+        public void Process(TextReader reader)
         {
             string line;
             int wordCount = 0;
@@ -34,28 +38,41 @@ namespace WordCount
 
             while ((line = reader.ReadLine()) != null)
             {
-                // Check if the line is empty or whitespace only
-                if (string.IsNullOrWhiteSpace(line))
+                if (IsParagraphSeparator(line))
                 {
-                    // Paragraph delimiter
                     if (inParagraph)
                     {
-                        Console.WriteLine(wordCount);
+                        OutputParagraph(wordCount);
                         wordCount = 0;
                         inParagraph = false;
                     }
                     continue;
                 }
 
-                var words = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
-                wordCount += words.Length;
+                wordCount += CountWords(line);
                 inParagraph = true;
             }
-
             if (inParagraph)
             {
-                Console.WriteLine(wordCount);
+                OutputParagraph(wordCount);
             }
         }
+
+        private bool IsParagraphSeparator(string line)
+        {
+            return string.IsNullOrWhiteSpace(line);
+        }
+
+        private int CountWords(string line)
+        {
+            var words = line.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            return words.Length;
+        }
+
+        private void OutputParagraph(int count)
+        {
+            Console.WriteLine(count);
+        }
+        
     }
 }
